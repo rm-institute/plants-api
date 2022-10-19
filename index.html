@@ -9,5 +9,11 @@
 <body>
     <h1>PLANT NAMES API</h1>
     <p>Please use https://rm-plants-api.herokuapp.com/api/plant-name</p>
+    <form action="/addPlant" method="POST">
+        <input type="text" placeholder="name" name="nickName">
+        <input type="text" placeholder="scientific name" name="latinName">
+        <input type="text" placeholder="pet-safe" name="pet-safe">
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>

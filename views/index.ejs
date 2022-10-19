@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLANT APP</title>
+</head>
+<body>
+    <h1>PLANT NAMES API</h1>
+    <p>Please use https://rm-plants-api.herokuapp.com/api/plant-name</p>
+    <form action="/addPlant" method="POST">
+        <input type="text" placeholder="Name" name="nickName">
+        <input type="text" placeholder="Scientific Name" name="latinName">
+        <input type="text" placeholder="Pet Safe" name="petSafe">
+        <button type="submit">Submit</button>
+        <!-- <%= plantResultInfo %> -->
+    </form>
+    
+    <h2>Plant Information</h2>
+
+    <ul class="plantsInfo">
+    <% for(let i = 0; i < plantResultInfo.length; i++) {%>
+        <li class="rapper">
+            <span><%= plantResultInfo[i].nickName %></span>,
+            <span><%= plantResultInfo[i].latinName %></span>,
+            <span><%= plantResultInfo[i].petSafe %></span>
+        </li>
+    <% } %>
+    </ul>
+
+
+    <script src="js/main.js"></script>
+</body>
+</html>
