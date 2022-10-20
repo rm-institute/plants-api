@@ -1,99 +1,76 @@
 const express = require("express")
 const app = express()
 const MongoClient = require('mongodb').MongoClient
-const bodyParser= require('body-parser')
-const cors = require("cors")
+// const bodyParser= require('body-parser')
+// const cors = require("cors")
 const PORT = 8000
 require('dotenv').config()
 
 
+
 let db,
     dbConnectionStr = process.env.DB_STRING,
-    dbName = "plant-app"
+    dbName = 'plant-app'
 
 MongoClient.connect(dbConnectionStr, { useUnifiedTopology: true })
     .then(client => {
         console.log(`Connected to ${dbName} Database`)
         db = client.db(dbName)
-        // plantsCollection = db.collection("plantsCollection")
     })
-    // .catch(error => console.error(error))
-
-
-app.set("view engine", "ejs")
+    
+app.set('view engine', 'ejs')
 app.use(express.static('public'))
-app.use(cors())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
-// MongoClient.connect(connectionString, { useUnifiedTopology: true })
-//   .then(client => {
-//     console.log('Connected to Database')
-//   })
-//   .catch(error => console.error(error))
 
-const plants = {
-    "monstera": {
-        "nickName": "swiss cheese plant, monstera",
-        "latinName": "Monstera deliciosa",
-        "plantType": "tropical",
-        "petSafe": "moderately toxic"
-    },
-    "spider plant": {
-        "nickName": "spider plant, spider ivy, ribbon plant",
-        "latinName": "Chlorophytum comosum",
-        "plantType": "tropical",
-        "petSafe": "non-toxic"
-    },
-    "rubber plant": {
-        "nickName": "rubber plant, Rubber fig, rubber bush, rubber tree",
-        "latinName": "Ficus elastica",
-        "plantType": "evergreen tropical",
-        "petSafe": "mildly toxic"
-    },
-    "unknown": {
-        "nickName": "Not yet in our database",
-        "latinName": "n/a",
-        "plantType": "n/a",
-        "petSafe": "n/a"
-    }
-}
-
-// app.get('/',(request, response)=>{
-//     db.collection('rappers').find().sort({likes: -1}).toArray()
-//     .then(data => {
-//         response.render('index.ejs', { info: data })
-//     })
-//     .catch(error => console.error(error))
-// })
-
-app.get("/", (request, response) => {
-    db.collection("plantsCollection").find().toArray()
-        .then(result => {
-            response.render("index.ejs", {plantResultInfo : result})
-        })
+app.get('/',(request, response)=>{
+    db.collection('plantsCollection').find().sort({likes: -1}).toArray()
+    .then(data => {
+        response.render('index.ejs', { info: data })
+    })
     .catch(error => console.error(error))
-    // response.sendFile(__dirname + "/index.html")
 })
 
-// app.get("/api/:name", (request, response) => {
-//     const plantName = request.params.name.toLowerCase()
-//     if(plants[plantName]) {
-//         response.json(plants[plantName])
-//     }else {
-//         response.json(plants["unknown"])
-//     }
-// })
-
 app.post('/addPlant', (request, response) => {
-    db.collection("plantsCollection").insertOne({nickName: request.body.nickName, 
-        latinName: request.body.latinName, petSafe: request.body.petSafe})
+    db.collection('plantsCollection').insertOne({nickName: request.body.nickName,
+    latinName: request.body.latinName, petSafe: request.body.petSafe, likes: 0})
     .then(result => {
         console.log('Plant Added')
         response.redirect('/')
-      })
-      .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
 })
 
-app.listen(process.env.PORT || PORT, () => {
-    console.log(`The server is running on ${PORT}.`)
+app.put('/addOneLike', (request, response) => {
+    db.collection('plantsCollection').updateOne({nickName: request.body.nickNameS, latinName: request.body.latinNameS, petSafe: request.body.petSafeS, likes: request.body.likesS},{
+        $set: {
+            likes:request.body.likesS + 1
+          }
+    },{
+        sort: {_id: -1},
+        upsert: true
+    })
+    .then(result => {
+        console.log('Added One Like')
+        response.json('Like Added')
+    })
+    .catch(error => console.error(error))
+
+})
+
+
+
+app.delete('/deletePlant', (request, response) => {
+    db.collection('plantsCollection').deleteOne({nickName: request.body.nickNameS})
+    .then(result => {
+        console.log('Plant Deleted')
+        response.json('Plant Deleted')
+    })
+    .catch(error => console.error(error))
+
+})
+
+app.listen(process.env.PORT || PORT, ()=>{
+    console.log(`Server running on port ${PORT}`)
 })

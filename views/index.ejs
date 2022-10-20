@@ -5,28 +5,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLANT APP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>PLANT NAMES API</h1>
-    <p>Please use https://rm-plants-api.herokuapp.com/api/plant-name</p>
+    <h1>PLANT FACTS</h1>
+    <!-- <p>Please use https://rm-plants-api.herokuapp.com/api/plant-name</p> -->
+
     <form action="/addPlant" method="POST">
         <input type="text" placeholder="Name" name="nickName">
         <input type="text" placeholder="Scientific Name" name="latinName">
         <input type="text" placeholder="Pet Safe" name="petSafe">
-        <button type="submit">Submit</button>
-        <!-- <%= plantResultInfo %> -->
+        <input type="submit">
     </form>
-    
+
     <h2>Plant Information</h2>
 
     <ul class="plantsInfo">
-    <% for(let i = 0; i < plantResultInfo.length; i++) {%>
-        <li class="rapper">
-            <span><%= plantResultInfo[i].nickName %></span>,
-            <span><%= plantResultInfo[i].latinName %></span>,
-            <span><%= plantResultInfo[i].petSafe %></span>
-        </li>
-    <% } %>
+        <% for(let i = 0; i < info.length; i++) {%>
+            <li class="plantInfo">
+                <span><%= info[i].nickName %></span>,
+                <span><%= info[i].latinName %></span>,
+                <span><%= info[i].petSafe %></span>
+                <span><%= info[i].likes %></span>
+                <span class='fa fa-thumbs-up'></span>
+                <span class='fa fa-trash'></span>
+            </li>
+        <% } %>
     </ul>
 
 
